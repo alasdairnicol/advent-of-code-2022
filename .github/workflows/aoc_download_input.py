@@ -18,7 +18,7 @@ def main():
         filename = f"day{day:02}.txt"
 
         if Path(filename).exists():
-            print(f"Day {} input has already been downloaded")
+            print(f"Day {day} input has already been downloaded")
             continue
 
         url = f"https://adventofcode.com/{year}/day/{day}/input"
