@@ -6,7 +6,7 @@ import urllib.request
 
 def main():
     session = os.environ["session"]
-    year = os.environ["year"]
+    year = int(os.environ["year"])
 
     headers = {"Cookie": f"session={session}"}
 
