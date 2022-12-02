@@ -1,89 +1,40 @@
 #!/usr/bin/env python
 
-# Outcome score
-WIN = 6
-DRAW = 3
-LOSS = 0
 
-# Shape scores
-ROCK = 1
-PAPER = 2
-SCISSORS = 3
-
-elf_move_to_shape = {
-    "A": ROCK,
-    "B": PAPER,
-    "C": SCISSORS,
-}
-
-round_1_move_to_shape = {
-    "X": ROCK,
-    "Y": PAPER,
-    "Z": SCISSORS,
-}
-
-round_2_outcome_scores = {
-    "X": LOSS,
-    "Y": DRAW,
-    "Z": WIN,
-}
-
-score_round = {
-    # (elf_move, your_move): outcome
-    (ROCK, ROCK): DRAW,
-    (ROCK, PAPER): WIN,
-    (ROCK, SCISSORS): LOSS,
-    (PAPER, ROCK): LOSS,
-    (PAPER, PAPER): DRAW,
-    (PAPER, SCISSORS): WIN,
-    (SCISSORS, ROCK): WIN,
-    (SCISSORS, PAPER): LOSS,
-    (SCISSORS, SCISSORS): DRAW,
-}
-
-round_2_shapes = {
-    # (elf_move, outcome): your_move
-    (ROCK, LOSS): SCISSORS,
-    (ROCK, DRAW): ROCK,
-    (ROCK, WIN): PAPER,
-    (PAPER, LOSS): ROCK,
-    (PAPER, DRAW): PAPER,
-    (PAPER, WIN): SCISSORS,
-    (SCISSORS, LOSS): PAPER,
-    (SCISSORS, DRAW): SCISSORS,
-    (SCISSORS, WIN): ROCK,
+letter_to_instruction = {
+    "A": 0,
+    "B": 1,
+    "C": 2,
+    "X": 0,
+    "Y": 1,
+    "Z": 2,
 }
 
 
-def parse_line(line: str) -> tuple[str, str]:
-    pieces = line.split(" ", maxsplit=1)
-    return (pieces[0], pieces[1])
+def parse_line(line: str) -> tuple[int, int]:
+    p1, p2 = line.split(" ", maxsplit=1)
+    return (letter_to_instruction[p1], letter_to_instruction[p2])
 
 
-def score_round_1(round: tuple[str, str]) -> int:
-    elf_shape = elf_move_to_shape[round[0]]
-    your_shape = round_1_move_to_shape[round[1]]
-    outcome_score = score_round[(elf_shape, your_shape)]
-    shape_score = your_shape
+def score_round_1(player_1: int, player_2: int) -> int:
+    outcome_score = ((player_2 + 1 - player_1) % 3) * 3
+    shape_score = player_2 + 1
     return outcome_score + shape_score
 
 
-def do_part_1(rounds: list[tuple[str, str]]) -> int:
-    scores = [score_round_1(r) for r in rounds]
+def do_part_1(rounds: list[tuple[int, int]]) -> int:
+    scores = [score_round_1(p1, p2) for (p1, p2) in rounds]
     return sum(scores)
 
 
-def score_round_2(round: tuple[str, str]) -> int:
-    elf_shape = elf_move_to_shape[round[0]]
-    your_outcome = round[1]
-    outcome_score = round_2_outcome_scores[your_outcome]
-    your_shape = round_2_shapes[(elf_shape, outcome_score)]
-    shape_score = your_shape
+def score_round_2(player_1, player_2) -> int:
+    outcome_score = 3 * player_2
+    shape_score = (player_1 - (3 - (player_2 + 2)) % 3) % 3 + 1
     return outcome_score + shape_score
 
 
-def do_part_2(rounds: list[tuple[str, str]]) -> int:
-    scores = [score_round_2(r) for r in rounds]
+def do_part_2(rounds: list[tuple[int, int]]) -> int:
+    scores = [score_round_2(p1, p2) for (p1, p2) in rounds]
     return sum(scores)
 
 
