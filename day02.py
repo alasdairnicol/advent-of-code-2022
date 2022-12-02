@@ -29,7 +29,7 @@ def do_part_1(rounds: list[tuple[int, int]]) -> int:
 
 def score_round_2(player_1, player_2) -> int:
     outcome_score = 3 * player_2
-    shape_score = (player_1 - (3 - (player_2 + 2)) % 3) % 3 + 1
+    shape_score = (player_1 + player_2 - 1) % 3 + 1
     return outcome_score + shape_score
 
 
