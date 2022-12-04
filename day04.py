@@ -17,7 +17,7 @@ def do_part_2(pairs: list[Pair]) -> int:
 
 
 def parse_range(range_str: str) -> tuple[int, int]:
-    x, y = range_str.split(",")
+    x, y = range_str.split("-")
     return int(x), int(y)
 
 
