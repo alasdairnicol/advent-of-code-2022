@@ -31,9 +31,7 @@ def is_fully_contained(x: Section, y: Section) -> bool:
 
 
 def has_overlap(x: Section, y: Section) -> bool:
-    return (y[0] <= x[0] <= y[1] or y[0] <= x[1] <= y[1]) or (
-        x[0] <= y[0] <= x[1] or x[0] <= y[1] <= x[1]
-    )
+    return x[0] <= y[1] and y[0] <= x[1]
 
 
 def main():
