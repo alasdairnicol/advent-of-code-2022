@@ -2,6 +2,7 @@
 import itertools
 from typing import Iterable
 
+
 def find_start(datastream: Iterable, num_unique_chars: int) -> int:
     iters = itertools.tee(datastream, num_unique_chars)
     for i, x in enumerate(iters):
