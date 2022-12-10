@@ -14,7 +14,8 @@ class Computer:
         self.instructions = instructions
         self.cycle = 1
         self.x_register = 1
-        self.output = []
+        self.part_1_output = []
+        self.lit = []
 
     @classmethod
     def from_lines(cls, lines):
@@ -32,9 +33,20 @@ class Computer:
                 cycles = [self.cycle, self.cycle + 1]
                 self.cycle += 2
 
-            for c in cycles:
-                if c % 40 == 20:
-                    self.output.append(old_x * c)
+            for cycle in cycles:
+                if cycle % 40 == 20:
+                    self.part_1_output.append(old_x * cycle)
+
+                crt_position = cycle - 1
+                if crt_position % 40 in (old_x - 1, old_x, old_x + 1):
+                    self.lit.append(crt_position)
+
+
+def display_lcd(lit):
+    for y in range(6):
+        positions = [y * 40 + x for x in range(40)]
+        line = "".join("#" if pos in lit else "." for pos in positions)
+        print(line)
 
 
 def main():
@@ -42,9 +54,10 @@ def main():
     computer = Computer.from_lines(lines)
 
     computer.run()
-    part_1 = sum(computer.output)
+    part_1 = sum(computer.part_1_output)
     print(f"{part_1=}")
 
+    display_lcd(computer.lit)
     # part_2 = do_moves(moves, 10)
     # print(f"{part_2=}")
 
