@@ -42,11 +42,23 @@ class Computer:
                     self.lit.append(crt_position)
 
 
-def display_lcd(lit):
+def display_part_2(lit):
+    lines = []
     for y in range(6):
         positions = [y * 40 + x for x in range(40)]
         line = "".join("#" if pos in lit else "." for pos in positions)
-        print(line)
+        lines.append(line)
+    lcd = "\n".join(lines)
+
+    try:
+        from advent_of_code_ocr import convert_6  # type: ignore
+
+        return convert_6(lcd)
+
+    except ImportError:
+        print("Install advent-of-code-ocr to parse letters")
+        print(lcd)
+        return None
 
 
 def main():
@@ -57,9 +69,8 @@ def main():
     part_1 = sum(computer.part_1_output)
     print(f"{part_1=}")
 
-    display_lcd(computer.lit)
-    # part_2 = do_moves(moves, 10)
-    # print(f"{part_2=}")
+    part_2 = display_part_2(computer.lit)
+    print(f"{part_2=}")
 
 
 def read_input() -> list[str]:
