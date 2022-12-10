@@ -11,9 +11,9 @@ priority = {
 
 def grouper(n: int, iterable: Iterable) -> Iterable:
     """
-    Split an iterable into chunks of 3
+    Split an iterable into chunks of n
 
-    e.g. ABCDEFGHI -> ABC, DEF, GHI
+    e.g. grouper('ABCDEFGHI', 3) -> 'ABC', 'DEF', 'GHI'
 
     NB Discards elements if len(iterable) is not divisible by n
     """
