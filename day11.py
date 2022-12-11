@@ -16,12 +16,6 @@ class Monkey:
     items: list
     num_items: int = 0
 
-    @property
-    def size(self):
-        if not hasattr(self, "_size"):
-            self._size = sum(f.size for f in self.files.values())
-        return self._size
-
 
 def operation_monkey_0(old):
     return old * 5
