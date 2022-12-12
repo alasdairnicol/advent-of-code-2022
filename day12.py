@@ -24,21 +24,27 @@ class Grid:
                 heights[(i, j)] = height
         return Grid(heights, start, end)
 
-    def neighbours(self, point):
+    def neighbours(self, point, ignore_a_neighbours):
         x, y = point
         current_height = self.heights[point]
         for i, j in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
             new_point = (x + i, y + j)
             if self.heights.get(new_point, 100) - current_height <= 1:
-                yield new_point
+                if ignore_a_neighbours and self.heights[new_point] == 0:
+                    # No point considering a route that visits another 'a' for part 2
+                    pass
+                else:
+                    yield new_point
 
-    def solve(self, starting_point):
+    def solve(self, starting_point, ignore_a_neighbours=False):
         queue = [starting_point]
         num_steps_dict = {starting_point: 0}
         while self.end not in num_steps_dict and queue:
             point = queue.pop(0)
             num_steps = num_steps_dict[point] + 1
-            for neighbour in self.neighbours(point):
+            for neighbour in self.neighbours(
+                point, ignore_a_neighbours=ignore_a_neighbours
+            ):
                 if (
                     neighbour not in num_steps_dict
                     or num_steps_dict[neighbour] > num_steps
@@ -51,7 +57,7 @@ class Grid:
 
 def do_part_2(grid):
     starting_points = [point for point, height in grid.heights.items() if height == 0]
-    steps = (grid.solve(point) for point in starting_points)
+    steps = (grid.solve(point, ignore_a_neighbours=True) for point in starting_points)
     return min(s for s in steps if s is not None)
 
 
