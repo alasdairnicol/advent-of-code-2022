@@ -47,7 +47,6 @@ class Grid:
             ):
                 if (
                     neighbour not in num_steps_dict
-                    or num_steps_dict[neighbour] > num_steps
                 ):
                     num_steps_dict[neighbour] = num_steps
                     queue.append(neighbour)
