@@ -45,9 +45,7 @@ class Grid:
             for neighbour in self.neighbours(
                 point, ignore_a_neighbours=ignore_a_neighbours
             ):
-                if (
-                    neighbour not in num_steps_dict
-                ):
+                if neighbour not in num_steps_dict:
                     num_steps_dict[neighbour] = num_steps
                     queue.append(neighbour)
 
