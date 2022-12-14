@@ -32,8 +32,7 @@ def make_grid(lines: list[str]) -> dict:
     return grid
 
 
-def drop_grain(grid: dict) -> None | Point:
-    max_y = max(y for (x, y) in grid if grid[(x, y)] == "#")
+def drop_grain(grid: dict, max_y: int) -> None | Point:
     pos = (500, 0)
     while True:
         for next_pos in [
@@ -53,15 +52,14 @@ def drop_grain(grid: dict) -> None | Point:
             return pos
 
 
-def do_part_1(grid: dict) -> int:
-    while (pos := drop_grain(grid)) is not None:
+def do_part_1(grid: dict, max_y: int) -> int:
+    while (pos := drop_grain(grid, max_y)) is not None:
         grid[pos] = "o"
 
     return count_grains(grid)
 
 
-def do_part_2(grid: dict) -> int:
-    max_y = max(y for (x, y) in grid if grid[(x, y)] == "#")
+def do_part_2(grid: dict, max_y: int) -> int:
     grid[(500, 0)] = "o"
     points = {(500, 0): "o"}
     for y in range(1, max_y + 2):
@@ -86,12 +84,12 @@ def count_grains(grid: dict) -> int:
 def main():
     lines = read_input()
     grid = make_grid(lines)
+    max_y = max(y for (x, y) in grid if grid[(x, y)] == "#")
 
-    part_1 = do_part_1(grid)
+    part_1 = do_part_1(grid, max_y)
     print(f"{part_1=}")
 
-    do_part_2(grid)
-    part_2 = len([x for x, y in grid.items() if y == "o"])
+    part_2 = do_part_2(grid, max_y)
     print(f"{part_2=}")
 
 
