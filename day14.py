@@ -32,8 +32,8 @@ def make_grid(lines: list[str]) -> dict:
     return grid
 
 
-def drop_grain(grid: dict, max_y: int) -> None | Point:
-    pos = (500, 0)
+def drop_grain(grid: dict, max_y: int, has_floor, visited) -> None | Point:
+    pos = visited[-1]
     while True:
         for next_pos in [
             (pos[0], pos[1] + 1),
@@ -41,25 +41,57 @@ def drop_grain(grid: dict, max_y: int) -> None | Point:
             (pos[0] + 1, pos[1] + 1),
         ]:
             if next_pos not in grid:
-                if next_pos[1] == max_y:
+                if has_floor and next_pos[1] == max_y + 2:
+                    # we've hit the floor
+                    continue
+                elif not has_floor and next_pos[1] == max_y:
                     # it's going to flow out the bottom
                     return None
                 else:
                     pos = next_pos
+                    visited.append(pos)
                     break
         else:
             # none of the possible moves are free, grain can't move
-            return pos
+            return visited.pop()
 
 
 def do_part_1(grid: dict, max_y: int) -> int:
-    while (pos := drop_grain(grid, max_y)) is not None:
+    start = (500, 0)
+    visited = [start]
+
+    while (
+        pos := drop_grain(grid, max_y, has_floor=False, visited=visited)
+    ) is not None:
+        if len(pos) > 100:
+            raise
         grid[pos] = "o"
 
     return count_grains(grid)
 
 
+def do_part_2_by_dropping_grains(grid: dict, max_y: int) -> int:
+    """
+    Original appraoch of dropping grains until start position
+    is filled
+    """
+    visited = [(500, 0)]
+
+    while True:
+        pos = drop_grain(grid, max_y, has_floor=True, visited=visited)
+        grid[pos] = "o"
+
+        if pos == (500, 0):
+            break
+
+    return count_grains(grid)
+
+
 def do_part_2(grid: dict, max_y: int) -> int:
+    """
+    Faster approach of working from starting position and going
+    row by row to the bottom, filling points the row above.
+    """
     grid[(500, 0)] = "o"
     points = {(500, 0): "o"}
     for y in range(1, max_y + 2):
@@ -90,6 +122,7 @@ def main():
     print(f"{part_1=}")
 
     part_2 = do_part_2(grid, max_y)
+    # part_2 = do_part_2_by_dropping_grains(grid, max_y)
     print(f"{part_2=}")
 
 
