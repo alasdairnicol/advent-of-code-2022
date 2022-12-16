@@ -157,23 +157,5 @@ def read_input() -> list[str]:
         return f.read().rstrip().split("\n")
 
 
-# Code used to visualize graphs. Requires Python package
-# to be installed and graphviz to be installed on system.
-# import pydot
-
-# def draw_pydot_graph(flow, edges):
-#     graph = pydot.Dot("Cave", graph_type="graph")
-#     for c in edges:
-#         label = f"{c} ({flow[c]})"
-#         color = "blue"
-#         graph.add_node(pydot.Node(c, label=label, shape="circle", color=color))
-
-#     for c, vv in edges.items():
-#         for v, length in vv.items():
-#             if c < v:
-#                 graph.add_edge(pydot.Edge(c, v, label=length))
-#     graph.write_png("output.png")
-
-
 if __name__ == "__main__":
     main()
