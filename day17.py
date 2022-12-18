@@ -40,22 +40,6 @@ def move_left(shape):
     return
 
 
-def print_board(points, shape_points, max_y):
-    def val(x, y):
-        if x in (-1, 7):
-            return "|"
-        elif (x, y) in points:
-            return "#"
-        elif (x, y) in shape_points:
-            return "@"
-        else:
-            return " "
-
-    print("\n\n\n")
-    for y in range(max_y, -1, -1):
-        print("".join(val(x, y) for x in range(-1, 8)))
-
-
 def relative_heights(points):
     absolutes = [max(y for (x, y) in points if x == i) for i in range(7)]
     min_height = min(absolutes)
@@ -70,7 +54,6 @@ def simplify_points(points, shape_points):
     for y in ys:
         if all((x, y) in points for x in range(7)):
             # we have a complete row
-            # print("Completed row", y)
             points = {p for p in points if p[1] >= y}
             break
     return points
@@ -136,9 +119,6 @@ def detect_cycle(moves_string):
         shape_points = next(shapes_iterable)(highest_point + 4)
 
         while True:
-            # print(points)
-            # print(shape_points)
-
             # Try to move left/right
             move = next(moves)
             moves_count += 1
@@ -167,10 +147,12 @@ def detect_cycle(moves_string):
 
         points = simplify_points(points, shape_points)
         highest_point = max(y for (x, y) in points)
-        lowest_point = min(y for (x, y) in points)
-        relative_points = frozenset((x, y - lowest_point) for (x, y) in points)
 
-        key = (relative_points, moves_count % len(moves_string), n % len(shapes))
+        key = (
+            relative_heights(points),
+            moves_count % len(moves_string),
+            n % len(shapes),
+        )
         if key in seen_positions:
             old_n, old_highest_point = seen_positions[key]
 
@@ -194,7 +176,6 @@ def do_part_2(moves_string):
 
 def main():
     moves_string = read_input()
-    # moves_string = ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>"
 
     part_1 = calc_highest_point(moves_string, 2022)
     print(f"{part_1=}")
