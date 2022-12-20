@@ -7,30 +7,29 @@ def do_mixing(
 ) -> int:
     zero = initial_numbers.index(0)
 
-    len_numbers = len(initial_numbers)
+    length = len(initial_numbers)
     numbers_dict = dict(enumerate(x * multiplier for x in initial_numbers))
-    rotate_dict = {k: v % (len_numbers - 1) for k, v in numbers_dict.items()}
+    rotate_dict = {k: v % (length - 1) for k, v in numbers_dict.items()}
 
-    positions = deque(range(len_numbers))
+    positions = deque(range(length))
 
     for round in range(num_rounds):
-        for position in range(len_numbers):
+        for position in range(length):
             number = rotate_dict[position]
-            while positions[0] != position:
-                positions.rotate()
+            # Rotate deque so that position is at the beginning
+            positions.rotate(-positions.index(position))
 
             positions.popleft()
             positions.rotate(-number)
             positions.appendleft(position)
 
-    while positions[0] != zero:
-        positions.rotate()
+    zero_index = positions.index(zero)
 
     return sum(
         [
-            numbers_dict[positions[1000 % len_numbers]],
-            numbers_dict[positions[2000 % len_numbers]],
-            numbers_dict[positions[3000 % len_numbers]],
+            numbers_dict[positions[(zero_index + 1000) % length]],
+            numbers_dict[positions[(zero_index + 2000) % length]],
+            numbers_dict[positions[(zero_index + 3000) % length]],
         ]
     )
 
