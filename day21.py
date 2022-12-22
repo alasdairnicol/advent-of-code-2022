@@ -67,7 +67,6 @@ def solve_monkey(monkeys: dict, name: str, value: int) -> None:
 
 def main():
     lines = read_input()
-    lines = example_lines
 
     monkeys = dict(parse_line(line) for line in lines)
 
