@@ -68,7 +68,24 @@ def print_board(board):
         print("".join(board.get((x, y), " ") for x in range(min(xs), max(xs) + 1)))
 
 
-def plot_path(board, moves):
+def wrap_flat(board, position, next_position, direction):
+    if next_position not in board:
+        # wrap around
+        if direction == (1, 0):
+            next_position = row(board, position[1])[0]
+        elif direction == (0, 1):
+            next_position = column(board, position[0])[0]
+        elif direction == (-1, 0):
+            next_position = row(board, position[1])[-1]
+        elif direction == (0, -1):
+            next_position = column(board, position[0])[-1]
+
+    return next_position
+
+
+
+
+def plot_path(board, moves, wrap_function):
     position = row(board, 0)[0]
     direction = (1, 0)
 
@@ -82,15 +99,7 @@ def plot_path(board, moves):
                 next_position = (position[0] + direction[0], position[1] + direction[1])
 
                 if next_position not in board:
-                    # wrap around
-                    if direction == (1, 0):
-                        next_position = row(board, position[1])[0]
-                    elif direction == (0, 1):
-                        next_position = column(board, position[0])[0]
-                    elif direction == (-1, 0):
-                        next_position = row(board, position[1])[-1]
-                    elif direction == (0, -1):
-                        next_position = column(board, position[0])[-1]
+                    next_position = wrap_function(board, position, next_position, direction)
 
                 if board[next_position] == "#":
                     # hit wall
@@ -119,7 +128,7 @@ def main():
     moves = list(parse_moves(moves_str))
     board = parse_board(board_str)
 
-    (x, y), direction = plot_path(board, moves)
+    (x, y), direction = plot_path(board, moves, wrap_flat)
     score = 1000 * (y + 1) + 4 * (x + 1) + list(directions).index(direction)
     print(x, y, direction)
     print(score)
