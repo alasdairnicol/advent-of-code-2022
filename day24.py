@@ -1,18 +1,9 @@
 #!/usr/bin/env python
 from collections import defaultdict
-
-example_lines = """\
-#.######
-#>>.<^<#
-#.<..<<#
-#>v.><>#
-#<^v^^>#
-######.#""".split(
-    "\n"
-)
+import itertools
 
 
-def parse_grid(lines):
+def parse_grid(lines: list[str]) -> dict:
     grid = defaultdict(list)
     for j, row in enumerate(lines):
         for i, val in enumerate(row):
@@ -21,22 +12,20 @@ def parse_grid(lines):
     return grid
 
 
-def get_val(grid, x, y):
+def get_val(grid: dict, x: int, y: int) -> str:
     val = grid.get((x, y), ["."])
     return str(len(val)) if len(val) > 1 else val[0]
 
 
-def print_grid(grid):
+def print_grid(grid: dict) -> None:
     xs = {x for (x, y) in grid}
     ys = {y for (x, y) in grid}
-
+    print()
     for y in range(min(ys), max(ys) + 1):
         print("".join(get_val(grid, x, y) for x in range(min(xs), max(xs) + 1)))
-    print()
 
 
-def next_grid(grid, width, height):
-    # FIXME wrap wrap wrap!
+def next_grid(grid: dict, width: int, height: int) -> dict:
     new = defaultdict(list)
     for (x, y), values in grid.items():
         for value in values:
@@ -59,34 +48,46 @@ def next_grid(grid, width, height):
     return new
 
 
+def chart_path(grid: dict, width: int, height: int, path: list[tuple[int, int]]):
+    time_taken = 0
+    for start, destination in itertools.pairwise(path):
+        reachable = {start}
+        while destination not in reachable:
+            grid = next_grid(grid, width, height)
+            new_reachable = {start}
+            for (x, y) in reachable:
+                for (i, j) in [(0, 0), (0, -1), (1, 0), (0, 1), (-1, 0)]:
+                    x_new, y_new = (x + i, y + j)
+                    if (x_new, y_new) not in grid and (
+                        (1 <= x_new < width and 1 <= y_new < height)
+                        or (x_new, y_new) in {start, destination}
+                    ):
+                        new_reachable.add((x_new, y_new))
+
+            reachable = new_reachable
+            time_taken += 1
+
+    return time_taken
+
+
 def main():
     lines = read_input()
-    lines = example_lines
     grid = parse_grid(lines)
-    minute = 0
-    print(f"Minute {minute}")
-    print_grid(grid)
 
+    # Calc dimensions of grid
     xs = {x for (x, y) in grid}
     ys = {y for (x, y) in grid}
-    start_column = set(grid.get((1, y), ["."])[0] for y in range(min(ys), max(ys) + 1))
-    end_column = set(
-        grid.get((max(xs) - 1, y), ["."])[0] for y in range(min(ys), max(ys) + 1)
-    )
     width = max(xs)
     height = max(ys)
-    assert {"^", "v"} & (start_column | end_column) == set()
 
-    for minute in range(1, 19):
-        grid = next_grid(grid, width, height)
-        print(f"Minute {minute}")
-        print_grid(grid)
-    # Check there are not blizzards moving up/down in the start/end columns
-    # This means we don't have to worry about blizzards hitting the start/end
-    # points
+    start = (1, 0)
+    destination = (width - 1, height)
 
-    # part_1 = count_empty_tiles(grid)
-    # print(f"{part_1=}")
+    part_1 = chart_path(grid, width, height, [start, destination])
+    print(f"{part_1=}")
+
+    part_2 = chart_path(grid, width, height, [start, destination, start, destination])
+    print(f"{part_2=}")
 
 
 def read_input() -> list[str]:
