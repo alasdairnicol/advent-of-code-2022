@@ -87,13 +87,13 @@ def do_part_1(blueprints):
 
     for id_number, blueprint in enumerate(blueprints, 1):
         max_robots = tuple(max(col) for col in zip(*blueprint))
-        print(calc_quality_level.cache_info())
+        # print(calc_quality_level.cache_info())
         calc_quality_level.cache_clear()
         t = time.time()
         quality_level = calc_quality_level(
             blueprint, max_robots, (0, 0, 0, 0), (1, 0, 0, 0), 24
         )
-        print(id_number, quality_level, time.time() - t)
+        # print(id_number, quality_level, time.time() - t)
         total += id_number * quality_level
 
     return total
@@ -107,13 +107,13 @@ def do_part_2(blueprints):
 
     for blueprint, early_exit in zip(blueprints[:3], [1, 1, 10]):
         max_robots = tuple(max(col) for col in zip(*blueprint))
-        print(calc_quality_level.cache_info())
+        # print(calc_quality_level.cache_info())
         calc_quality_level.cache_clear()
         t = time.time()
         quality_level = calc_quality_level(
             blueprint, max_robots, (3, 0, 0, 0), (1, 0, 0, 0), 29, early_exit
         )
-        print(quality_level, time.time() - t)
+        # print(quality_level, time.time() - t)
         total *= quality_level
 
     return total
